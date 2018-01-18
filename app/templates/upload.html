@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Upload</title>
+    <script src='/static/src/jquery.min.js'></script>
+    <script src='/static/src/test.js'></script>
+</head>
+<body>
+    <h1> File Upload stuff </h1>
+    <!-- the action below returns the endpoint, does it look for the method upload? Not sure tbh -->
+    <form id="upload-form" action="{{ url_for('index') }}" method="POST"
+                                                            enctype="multipart/form-data">
+        <input type="file" name="file" accept="video/*"> <!-- change this from all videotypes later? -->
+        <input type='submit' value='send'>
+    </form>
+    <input type="text" name="email" id="email"/>
+    <button id='test'>dinosaurs!</button>
+</body>

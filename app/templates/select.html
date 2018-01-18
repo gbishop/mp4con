@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang='en'>
+
+<head>
+    <meta charset='utf-8'>
+    <title>Slide Select</title>
+    <script type=text/javascript>
+            var img = '{{ img }}';
+            $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        </script>
+    <script src='/static/src/jquery.min.js'></script>
+    <script src='{{url_for("static", filename="src/select.js")}}'></script>
+    <link rel='stylesheet' type='text/css' href='{{url_for("static", filename="src/style.css")}}'></link>
+</head>
+
+<body>
+    <div id="filename" style="display:none">{{ file }}</div>
+
+
+</body>
+
+
+</html>

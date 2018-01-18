@@ -1,0 +1,19 @@
+#main {
+    display: flex;
+    flex-direction: row;
+    width: 1500px;
+    flex-wrap: wrap;
+}
+.container {
+    border: thin solid black;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+}
+.container.selected {
+    background: greenyellow;
+}
+img {
+    width: 300px;
+    height: auto;
+}
