@@ -9,7 +9,8 @@
 import os, os.path
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+## This is disabled for now, enable it for debugging in anaconda
+#import matplotlib.pyplot as plt
 import abc
 import cv2
 from abc import ABCMeta, abstractmethod

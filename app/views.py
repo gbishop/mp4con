@@ -16,6 +16,14 @@ STATIC = ROOT + "/static/"
 ALLOWED_EXTENSIONS = set(['mp4', 'mov'])
 
 
+
+# TODO
+## Look into python virtual environments
+## python way of handling temp files. 
+## Look into python processing rather than threading (LATER, NOT NOW)
+## 
+
+
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -25,7 +33,7 @@ def allowed_file(filename):
 def tt():
 
     return render_template('test.html')
-    
+
 @app.route('/_split_mid', methods=['POST', 'GET'])
 def split_mid():
     con.mid_split(STATIC+'/temp', request.args.get('name'), request.args.get('frame'))
@@ -37,7 +45,7 @@ def split_end():
 
 @app.route("/", methods=['POST', 'GET'])
 def index():
-
+    print(cv2.__version__)
     print('ACTIVE THREADS', threading.active_count())
     if not request.method == 'POST':
         return render_template("upload.html")
@@ -73,11 +81,6 @@ def index():
             con.forward_split(STATIC + "/temp", filename)
 
     return render_template('select.html', img='static/temp/frames/', file=filename)
-    #return render_template('process.html',
-    #                       img='static/temp/frames/' + filename,
-    #                       textdims=tdims,
-    #                       picdims=pdims,
-    #                       name=filename)
 
 @app.route('/select_dims')
 def select_dims():
@@ -95,22 +98,25 @@ def select_dims():
 
 def send_csv(con, name, pdims, tdims, init, end, email):
     data = con.convert(name, pdims, tdims, init, end)
-    msg = MIMEMultipart()
-    msg['Subject'] = 'converted csv'
-    msg['From'] = 'mp4converter.threader@gmail.com'
-    body = 'DO NOT reply to this email, this account is only for sending out converted csv files'
-    content = MIMEText(body, 'plain')
-    msg.attach(content)
-    attachment = MIMEText(data)
-    attachment.add_header('Content-disposition', 'attachment', filename="".join((name[:-3],'csv')))
-    msg.attach(attachment)
-    s = smtplib.SMTP('smtp.gmail.com:587')
-    s.ehlo()
-    s.starttls()
-    s.login('mp4converter.threader@gmail.com', '...')
-    print(email)
-    s.sendmail('mp4converter.threader@gmail.com', email, msg.as_string())
-    s.quit()
+    ## Just a placeholder, will update to work properly on local machine when
+    ## hosted
+    print('done')
+   # msg = MIMEMultipart()
+   # msg['Subject'] = 'converted csv'
+   # msg['From'] = 'mp4converter.threader@gmail.com'
+   # body = 'DO NOT reply to this email, this account is only for sending out converted csv files'
+   # content = MIMEText(body, 'plain')
+   # msg.attach(content)
+   # attachment = MIMEText(data)
+   # attachment.add_header('Content-disposition','attachment',filename="".join((name[:-3],'csv')))
+   # msg.attach(attachment)
+   # s = smtplib.SMTP('smtp.gmail.com:587')
+   # s.ehlo()
+   # s.starttls()
+   # s.login('mp4converter.threader@gmail.com', '...')
+   # print(email)
+   # s.sendmail('mp4converter.threader@gmail.com', email, msg.as_string())
+   # s.quit()
 
 @app.route('/process', methods=['POST','GET'])
 def process():
@@ -124,10 +130,9 @@ def process():
                 iarg('pcropy')+iarg('pcroph')]
     args = [rarg('name'), pdims, tdims, rarg('init'), rarg('end')]
     print('ACTIVE THREADS', threading.active_count())
-    #pthread = threading.Thread(target=con.convert, args=(rarg('name'), pdims, tdims, rarg('init'), rarg('end')))
     pthread = threading.Thread(target=send_csv, args=(con, rarg('name'), pdims, tdims, rarg('init'), rarg('end'), rarg('email')))
 
-    try:    
+    try:
         pthread.start()
     except(KeyboardInterrupt, SystemExit):
         sys.exit()
@@ -160,4 +165,4 @@ def add_header(r):
     r.headers["Expires"] = "0"
     r.headers['Cache-Control'] = 'public, max-age=0'
     return r
-        
+
