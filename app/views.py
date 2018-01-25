@@ -6,6 +6,7 @@ from app import app
 import cv2
 import test
 import threading
+from multiprocessing import Process
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -46,7 +47,7 @@ def split_end():
 @app.route("/", methods=['POST', 'GET'])
 def index():
     print(cv2.__version__)
-    print('ACTIVE THREADS', threading.active_count())
+    #print('ACTIVE THREADS', threading.active_count())
     if not request.method == 'POST':
         return render_template("upload.html")
     if not os.path.isdir(os.path.join(STATIC, "temp/")):
@@ -59,7 +60,6 @@ def index():
             sys.exit("No File Found")
             return redirect(request.url)
         ufile = request.files['file']
-        #os.rename('/Users/vl/Desktop/JAA/'+ufile.filename, '/Users/vl/Desktop/JAA/0done/'+ufile.filename)
         filename = ufile.filename
         if filename == '':
             print('No selected file')
@@ -129,13 +129,16 @@ def process():
     pdims = [iarg('pcropx'), iarg('pcropy'), iarg('pcropx')+iarg('pcropw'),
                 iarg('pcropy')+iarg('pcroph')]
     args = [rarg('name'), pdims, tdims, rarg('init'), rarg('end')]
-    print('ACTIVE THREADS', threading.active_count())
-    pthread = threading.Thread(target=send_csv, args=(con, rarg('name'), pdims, tdims, rarg('init'), rarg('end'), rarg('email')))
+    #print('ACTIVE THREADS', threading.active_count())
+    #pthread = threading.Thread(target=send_csv, args=(con, rarg('name'), pdims,
+    #                                                  tdims, rarg('init'),
+    #                                                  rarg('end'),
+    #                                                  rarg('email'))))
 
-    try:
-        pthread.start()
-    except(KeyboardInterrupt, SystemExit):
-        sys.exit()
+    p = Process(target=send_csv, args=(con, rarg('name'), pdims, tdims,
+                                       rarg('init'), rarg('end'),
+                                       rarg('email')))
+    p.start()
 
     # con.convert(rarg('name'), pdims, tdims, rarg('init'), rarg('end'))
 
@@ -153,7 +156,7 @@ def retFrames():
     return jsonify(sorted(ret, key=int))
 
 
-# stops caches? Idk, something liek that
+# stops caching of images
 @app.after_request
 def add_header(r):
     """

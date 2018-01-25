@@ -381,8 +381,6 @@ def convert(*args):
     vid = VideoData(args[0],args[1],args[2],args[3], args[4])
     print('STUFF INSERTED')
     vid.split()
-    print('removing', args[0])
-    #os.remove(os.path.join('/Users/vl/Documents/School/gb/flask/app/static/temp/video/', str(args[0])))
     print('VID SPLIT')
     vid.extractFrames()
     print('FRAMES EXTRACTED')
