@@ -52,6 +52,10 @@ def index():
         return render_template("upload.html")
     if not os.path.isdir(os.path.join(STATIC, "temp/")):
         os.mkdir(os.path.join(STATIC, "temp/"))
+    if not os.path.isdir(os.path.join(STATIC,"temp/frames")):
+        os.mkdir(os.path.join(STATIC, "temp/frames"))
+    if not os.path.isdir(os.path.join(STATIC,"temp/video")):
+        os.mkdir(os.path.join(STATIC, "temp/video"))
     print('You got to the upload method!')
     if request.method == 'POST':
         # If ppl upload bad stuff
@@ -100,7 +104,6 @@ def send_csv(con, name, pdims, tdims, init, end, email):
     data = con.convert(name, pdims, tdims, init, end)
     ## Just a placeholder, will update to work properly on local machine when
     ## hosted
-    print('done')
     msg = MIMEMultipart()
     msg['Subject'] = 'converted csv'
     msg['From'] = 'gb.cs.unc.edu'
@@ -113,6 +116,7 @@ def send_csv(con, name, pdims, tdims, init, end, email):
     s = smtplib.SMTP('fafnir.cs.unc.edu')
     s.sendmail('gb@cs.unc.edu', email, msg.as_string())
     s.quit()
+    print('done')
 
 @app.route('/process', methods=['POST','GET'])
 def process():

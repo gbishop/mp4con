@@ -211,7 +211,7 @@ class VideoData(Data):
         if vc.isOpened():
             rval, frame = vc.read()
         else:
-            print('somethine went bad :(')
+            print('failed to open video using opencv (mp4-con)')
             rval = False
             return
         vc.set(cv2.CAP_PROP_POS_FRAMES, self.init)
