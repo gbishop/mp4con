@@ -101,22 +101,18 @@ def send_csv(con, name, pdims, tdims, init, end, email):
     ## Just a placeholder, will update to work properly on local machine when
     ## hosted
     print('done')
-   # msg = MIMEMultipart()
-   # msg['Subject'] = 'converted csv'
-   # msg['From'] = 'mp4converter.threader@gmail.com'
-   # body = 'DO NOT reply to this email, this account is only for sending out converted csv files'
-   # content = MIMEText(body, 'plain')
-   # msg.attach(content)
-   # attachment = MIMEText(data)
-   # attachment.add_header('Content-disposition','attachment',filename="".join((name[:-3],'csv')))
-   # msg.attach(attachment)
-   # s = smtplib.SMTP('smtp.gmail.com:587')
-   # s.ehlo()
-   # s.starttls()
-   # s.login('mp4converter.threader@gmail.com', '...')
-   # print(email)
-   # s.sendmail('mp4converter.threader@gmail.com', email, msg.as_string())
-   # s.quit()
+    msg = MIMEMultipart()
+    msg['Subject'] = 'converted csv'
+    msg['From'] = 'gb.cs.unc.edu'
+    body = 'DO NOT reply to this email, this account is only for sending out converted csv files'
+    content = MIMEText(body, 'plain')
+    msg.attach(content)
+    attachment = MIMEText(data)
+    attachment.add_header('Content-disposition','attachment',filename="".join((name[:-3],'csv')))
+    msg.attach(attachment)
+    s = smtplib.SMTP('fafnir.cs.unc.edu')
+    s.sendmail('gb@cs.unc.edu', email, msg.as_string())
+    s.quit()
 
 @app.route('/process', methods=['POST','GET'])
 def process():
