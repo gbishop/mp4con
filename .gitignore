@@ -1,2 +1,4 @@
 *.pyc
 __pycache__/
+gb_flask/
+app/static/temp/
