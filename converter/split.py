@@ -1,120 +1,63 @@
-
-# coding: utf-8
-
-# In[1]:
-
-
 import cv2
 import os
 import numpy as np
 import sys
+import tempfile
 
 
-# In[45]:
+def split(root, file, amnt=None, delta=1, direction='forward', init=0):
+    """Splits mp4 videos into individual frames.
 
+    Args:
+        root -- The folder containing the video to split.
+        file -- File name.
+        amnt -- (Optional) How many frames to split, None splits entire video (default None).
+        delta -- (Optional) Interval between frames to split (default 1).
+        direction -- (Optional) Whether to split forwards or backwards (default forward).
+        init -- (Optional) Frame to start splitting from, starts from the end of the 
+            video if direction is 'backwards' (default 0)
 
-# This split the mp4 into a lot of small frames
-def split(root, file, stop=None):
-    clear(root)
-    print('split', file)
-    if not os.path.isdir(root + '/frames/'):
-        os.mkdir(root + '/frames/')
-    vc = cv2.VideoCapture(root + '/video/' + file)
-    c = 0
-    if vc.isOpened():
-        rval, frame = vc.read()
-    else:
-        sys.exit('Couldn\'t open video file')
-    while rval:
-        rval, frame = vc.read()
-        # boole = cv2.imwrite('../frames2/' + str(c) + '.png', frame)
-        boole = cv2.imwrite(root + '/frames/' + file + str(c) + '.png', frame)
-        c += 1
-        cv2.waitKey(1)
-        if stop and c == stop:
-            break
-    vc.release
+    Returns:
+        A path containing the unique folder containing the frames.
 
+    Raises:
+        TODO fill this doc out
+    """
 
-def forward_split(root, file):
-    clear(root)
-    print('forwardsplit', file)
-    if not os.path.isdir(root + '/frames/'):
-        os.mkdir(root + '/frames/')
-    vc = cv2.VideoCapture(root + '/video/' + file)
-    c = 0
-    if vc.isOpened():
-        maxFrames = vc.get(cv2.CAP_PROP_FRAME_COUNT)
-        for x in range(48):
-            if x * 50 < maxFrames:
-                vc.set(cv2.CAP_PROP_POS_FRAMES, 50 * x)
-                rval, frame = vc.read()
-                cv2.imwrite(root + '/frames/' + str(50 * x) + '.png', frame)
-    else:
-        sys.exit('Couldn\'t open video file')
-    vc.release()
-    return ''
+    # TODO Write context manager for vc and wrap everything in a with statement.
+    # TODO Maybe change vars so you don't reassign the parameters?
+    # TODO make exceptions and stuff.
 
+    # Opens the video file, if it can't be opened throws an error
+    vc = cv2.VideoCapture(root+file)
+    if not vc.isOpened():
+        # Maybe use a different error? Idk
+        raise(FileNotFoundError("Couldn't open video file"))
 
-def backward_split(root, file):
-    clear(root)
-    print('backwardsplit', file)
-    if not os.path.isdir(root + '/frames/'):
-        os.mkdir(root + '/frames/')
-    vc = cv2.VideoCapture(root + '/video/' + file)
-    if vc.isOpened():
-        maxFrames = int(vc.get(cv2.CAP_PROP_FRAME_COUNT))
-        for x in range(48):
-            if maxFrames - x * 50 > 0:
-                vc.set(cv2.CAP_PROP_POS_FRAMES, maxFrames - 50 * x)
-                rval, frame = vc.read()
-                cv2.imwrite(root + '/frames/' +
-                            str(maxFrames - 50 * x) + '.png', frame)
-    else:
-        print("couldn't open vid file")
-    vc.release()
-    return ''
+    # If amnt is set to none, default to splitting the entire video
+    maxFrames = int(vc.get(cv2.CAP_PROP_FRAME_COUNT))
+    if not amnt:
+        amnt = maxFrames
 
+    # Set the initial frame to split from
+    vc.set(cv2.CAP_PROP_POS_FRAMES, init)
 
-def split_1(root, file, init):
-    clear(root)
-    vc = cv2.VideoCapture(root + '/video/' + file)
-    init = int(init)
-    if vc.isOpened():
-        vc.set(cv2.CAP_PROP_POS_FRAMES, init)
-        rval, frame = vc.read()
-        cv2.imwrite(root + '/frames/' +
-                    str(0) + '.png', frame)
-    else:
-        print("couldn't open vid file")
-    vc.release()
-    return ''
+    # Make the unique directory that will contain the frames
+    folder = tempfile.mkdtemp(dir=root)
 
+    # Set up method if direction is backwards
+    if direction == 'backward':
+        tempval = maxFrames - amnt * delta
+        init = tempval if tempval > 0 else 0
+        amnt = init+amnt
 
-def mid_split(root, file, init):
-    clear(root)
-    print('midsplit',file)
-    vc = cv2.VideoCapture(root + '/video/' + file)
-    init = int(init)
-    maxFrames = vc.get(cv2.CAP_PROP_FRAME_COUNT)
-    if vc.isOpened():
-        if not init == 0:
-            vc.set(cv2.CAP_PROP_POS_FRAMES, init - 50)
-            init -= 60
-        for x in range(24):
-            if x * 5 < maxFrames:
-                vc.set(cv2.CAP_PROP_POS_FRAMES, init + 5 * x)
-                rval, frame = vc.read()
-                cv2.imwrite(root + '/frames/' +
-                            str(init + 5 * x) + '.png', frame)
-        else:
-            maxFrames = vc.get(cv2.CAP_PROP_FRAME_COUNT)
-    vc.release()
-    return ''
-
-
-def clear(root):
-    filelist = [f for f in os.listdir(root + '/frames/') if f.endswith('.png')]
-    for f in filelist:
-        if f.endswith('.png'):
-            os.remove(os.path.join(root + '/frames/', f))
+    # Perform the actual video splitting from init to amnt
+    for x in range(init, amnt):
+        if x * delta < maxFrames:
+            vc.set(cv2.CAP_PROP_POS_FRAMES, x * delta)
+            rval, frame = vc.read()
+            if rval:
+                cv2.imwrite(folder+'/'+str(delta*x)+'.png', frame)
+            else:
+                break
+    return folder
