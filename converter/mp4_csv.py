@@ -207,7 +207,7 @@ class VideoData(Data):
         
     def split(self):
         # It's hard coded for now, I'll fix it later
-        vc = cv2.VideoCapture('app/static/temp/video/'+self.name)
+        vc = cv2.VideoCapture(self.name)
         if vc.isOpened():
             rval, frame = vc.read()
         else:

@@ -24,10 +24,12 @@
     <div id='init' style='display:none'> {{init}} </div>
     <div id='end' style='display:none'> {{end}} </div>
     <div type='hidden' id='filename' value='{{ name }}'></div>
+    <div type='hidden' id='folder' value='{{ folder }}'></div>
+    <div type='hidden' id='parent' value='{{ parent }}'></div>
     <h1> Process File Upload stuff </h1>
 
     <div id='interface'>
-        <img src="{{ img+'0.png' }}" id='target'>
+        <img src="{{ img+'/'+init+'.png' }}" id='target'>
     </div>
     <div id='text_inf'> Text: X
         <input type="text" name="tcropx" id="tcropx" value="{{ textdims['xmin'] }}" /> Y

@@ -27,9 +27,11 @@ def split(root, file, amnt=None, delta=1, direction='forward', init=0):
     # TODO Write context manager for vc and wrap everything in a with statement.
     # TODO Maybe change vars so you don't reassign the parameters?
     # TODO make exceptions and stuff.
+    # TODO UPDATE WHEN YOU'RE DELETING FROM THE MIDDLE (look at math req in split mid)
 
     # Opens the video file, if it can't be opened throws an error
-    vc = cv2.VideoCapture(root+file)
+    vid_path = os.path.join(root, file)
+    vc = cv2.VideoCapture(vid_path)
     if not vc.isOpened():
         # Maybe use a different error? Idk
         raise(FileNotFoundError("Couldn't open video file"))
@@ -47,17 +49,23 @@ def split(root, file, amnt=None, delta=1, direction='forward', init=0):
 
     # Set up method if direction is backwards
     if direction == 'backward':
-        tempval = maxFrames - amnt * delta
+        print("splitting backwards")
+        tempval = round(maxFrames - amnt*delta,-1) # The round is just for pretty numbers, not necessary
         init = tempval if tempval > 0 else 0
-        amnt = init+amnt
+        amnt = maxFrames
 
     # Perform the actual video splitting from init to amnt
-    for x in range(init, amnt):
-        if x * delta < maxFrames:
-            vc.set(cv2.CAP_PROP_POS_FRAMES, x * delta)
+    print('init:'+str(init), 'delta:'+str(delta), 'amnt*delta+init:'+str(amnt*delta+init), 'amnt:'+str(amnt),
+          'maxfrm:'+str(maxFrames))
+    print(vid_path)
+    for x in range(init, amnt*delta+init, delta):
+        if x < maxFrames:
+            vc.set(cv2.CAP_PROP_POS_FRAMES, x)
             rval, frame = vc.read()
             if rval:
-                cv2.imwrite(folder+'/'+str(delta*x)+'.png', frame)
+                cv2.imwrite(folder+'/'+str(x)+'.png', frame)
             else:
                 break
+    print("split complete")
+    vc.release()
     return folder

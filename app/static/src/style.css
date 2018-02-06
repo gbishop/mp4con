@@ -1,8 +1,24 @@
+html,
+body {
+  height: 100%;
+  margin: 0
+}
+#box {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+#header {
+    flex: 0 1 auto;
+}
 #main {
+    flex: 1 1 auto;
     display: flex;
     flex-direction: row;
-    width: 1500px;
+    width: 100%;
+    bottom: 0px;
     flex-wrap: wrap;
+    overflow: scroll;
 }
 .container {
     border: thin solid black;

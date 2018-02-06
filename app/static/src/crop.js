@@ -63,7 +63,9 @@ $(document).ready(function () {
                     init: $('#init').html(),
                     end: $('#end').html(),
                     name: $('#filename').attr('value'),
-                    email: $('#email').val()
+                    email: $('#email').val(),
+                    folder: $('#folder').attr('value'),
+                    parent: $('#parent').attr('value')
                 }
             })
             window.location = $SCRIPT_ROOT + '/';
