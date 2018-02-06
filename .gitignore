@@ -1,4 +1,5 @@
 *.pyc
 __pycache__/
 gb_flask/
-app/static/temp/
+app/static/temp/*
+*.DS_Store
