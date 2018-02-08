@@ -51,13 +51,12 @@ def cleanup():
     key = r'(\d+-)+\d+'
     now = datetime.datetime.now()
     for folder in os.listdir('app'+url_for('static', filename='temp')):
-        match = re.search(key, folder)
+        match = re.search(key, folder[:10])
         if match:
             td = now - datetime.datetime.strptime(match.group(0), '%Y-%m-%d')
             if td.days > 0:
                 shutil.rmtree('app'+url_for('static', filename='temp')+'/'+folder)
 
-    # Complete later, this should delete all folders that have a date older than 1 day
 
 
 @app.route('/test', methods=['POST', 'GET'])
