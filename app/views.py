@@ -12,6 +12,7 @@ from email.mime.multipart import MIMEMultipart
 import tempfile
 import datetime
 import shutil
+import re
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC = ROOT + "/static/"
@@ -47,6 +48,15 @@ def allowed_file(filename):
 def cleanup():
     if not os.path.isdir(os.path.join(STATIC, "temp/")):
         os.mkdir(os.path.join(STATIC, "temp/"))
+    key = r'(\d+-)+\d+'
+    now = datetime.datetime.now()
+    for folder in os.listdir('app'+url_for('static', filename='temp')):
+        match = re.search(key, folder)
+        if match:
+            td = now - datetime.datetime.strptime(match.group(0), '%Y-%m-%d')
+            if td.days > 0:
+                shutil.rmtree('app'+url_for('static', filename='temp')+'/'+folder)
+
     # Complete later, this should delete all folders that have a date older than 1 day
 
 
@@ -146,7 +156,6 @@ def process():
 
     pdims = [iarg('pcropx'), iarg('pcropy'), iarg('pcropx')+iarg('pcropw'),
              iarg('pcropy')+iarg('pcroph')]
-    args = [rarg('name'), pdims, tdims, rarg('init'), rarg('end')]
 
     p = Process(target=send_csv, args=(con, 'app/'+url_for('static', filename=rarg('parent')),
                                        rarg('name'), pdims, tdims,
@@ -162,6 +171,9 @@ def retFrames():
     ret = ([int(f[:-4])
             for f in os.listdir(ROOT+request.args.get('folder')) if f.endswith('.png')])
     return jsonify(sorted(ret, key=int))
+
+   
+        
 
 
 # stops caching of images

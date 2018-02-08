@@ -8,7 +8,6 @@
 //  filename = name of the video
 
 
-var init_sel = 0;
 
 function display_images(folder) {
     $.ajax({
@@ -42,7 +41,10 @@ function setup() {
     $('body').append('<div id="box"></div>');
     $('#box').append('<div id="header"></div>')
     $('#header').append('<h1 id="title">Select Beginning Frames</h1>');
-    $('#header').append('<div id="description">Select the first frame where the video starts -- when you see the book rather then a homescren or some other screen. If you want to be more precise click on the narrow selection to see the frames around the selected one. You should only narrow selection if the image at 0 seconds doesn\'t show the book. If you see any "broken" images, those are not a problem, they are just a product of the program trying to show frames past the length of the video');
+    $('#header').append('<div id="description">Select the first frame where the video starts -- when you see'+
+        'the book rather then a homescren or some other screen. If you want to be more precise click on the narrow selection to'+
+        'see the frames around the selected one. You should only narrow selection if the image at 0 seconds doesn\'t show the book.'+
+        'If you see any "broken" images, those are not a problem, they are just a product of the program trying to show frames past the length of the video');
     $('<button/>', {
         'text': 'Narrow Selection',
         'id': 'sel_specific'
