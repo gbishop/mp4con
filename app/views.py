@@ -111,7 +111,7 @@ def index():
 def select_dims():
     # con.split_1(STATIC+'/temp', request.args.get('name'),
     #            request.args.get('init_frame'))
-    tdims, pdims = con.estimate(STATIC + '/temp/frames/0.png')
+    tdims, pdims = con.estimate(ROOT+request.args.get('folder')+'/'+request.args.get('init_frame')+'.png')
     return render_template('process.html',
                            img=request.args.get('folder'),
                            textdims=tdims,

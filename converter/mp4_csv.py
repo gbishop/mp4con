@@ -10,7 +10,7 @@ import os, os.path
 import pandas as pd
 import numpy as np
 ## This is disabled for now, enable it for debugging in anaconda
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import abc
 import cv2
 from abc import ABCMeta, abstractmethod
@@ -205,25 +205,24 @@ class VideoData(Data):
         self.end = int(end)
 
         
-    def split(self):
-        # It's hard coded for now, I'll fix it later
-        vc = cv2.VideoCapture(self.name)
-        if vc.isOpened():
-            rval, frame = vc.read()
-        else:
-            print('failed to open video using opencv (mp4-con)')
-            rval = False
-            return
-        vc.set(cv2.CAP_PROP_POS_FRAMES, self.init)
-        c = 0
-        while c < self.end-self.init:
-            rval, frame = vc.read()
-            if type(frame) == np.ndarray:
-                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                self.frames.append(frame)
-            c+=1
-        vc.release
-        return self.frames
+    #def split(self):
+    #    vc = cv2.VideoCapture(self.name)
+    #    if vc.isOpened():
+    #        rval, frame = vc.read()
+    #    else:
+    #        print('failed to open video using opencv (mp4-con)')
+    #        rval = False
+    #        return
+    #    vc.set(cv2.CAP_PROP_POS_FRAMES, self.init)
+    #    c = 0
+    #    while c < self.end-self.init:
+    #        rval, frame = vc.read()
+    #        if type(frame) == np.ndarray:
+    #            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    #            self.frames.append(frame)
+    #        c+=1
+    #    vc.release
+    #    return self.frames
     
     def setFrames(self, frames):
         # Only for debugging purposes
@@ -231,17 +230,37 @@ class VideoData(Data):
         
     def extractFrames(self):
         page = PageData()
-        for x in range(len(self.frames) - 1):
-            im1 = self.frames[x]
-            im2 = self.frames[x+1]
-            temp = detectChange(im1, im2)
-            if type(temp) == str:
-                if len(page) >= 5:
-                    self.append(page)
-                    page = PageData()
-            else:
-                page.append(temp, x+1)
-        self.append(page)
+        vc = cv2.VideoCapture(self.name)
+        if vc.isOpened():
+            rval=True
+            vc.set(cv2.CAP_PROP_POS_FRAMES, self.init)
+            c = self.init
+            while(rval and c <= self.end-self.init):
+                rval, frame = vc.read()
+                im1 = frame
+                rva, frame = vc.read()
+                im2 = frame
+                temp = detectChange(im1, im2)
+                if type(temp) == str:
+                    if len(page) >= 5:
+                        self.append(page)
+                        page = PageData()
+                else:
+                    page.append(temp, c+1)
+            self.append(page)
+
+                
+            #for x in range(len(self.frames) - 1):
+            #    im1 = self.frames[x]
+            #    im2 = self.frames[x+1]
+            #    temp = detectChange(im1, im2)
+            #    if type(temp) == str:
+            #        if len(page) >= 5:
+            #            self.append(page)
+            #            page = PageData()
+            #    else:
+            #        page.append(temp, x+1)
+            #self.append(page)
     
     def setData(self, data):
         # Only for debugging purposes
@@ -380,7 +399,7 @@ def convert(*args):
     print('THREAD STARTED')
     vid = VideoData(args[0],args[1],args[2],args[3], args[4])
     print('STUFF INSERTED')
-    vid.split()
+    #vid.split()
     print('VID SPLIT')
     vid.extractFrames()
     print('FRAMES EXTRACTED')
