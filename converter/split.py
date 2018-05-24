@@ -31,6 +31,7 @@ def split(root, file, amnt=None, delta=1, direction='forward', init=0):
 
     # Opens the video file, if it can't be opened throws an error
     vid_path = os.path.join(root, file)
+    print(root, file, vid_path)
     vc = cv2.VideoCapture(vid_path)
     if not vc.isOpened():
         # Maybe use a different error? Idk
@@ -59,7 +60,7 @@ def split(root, file, amnt=None, delta=1, direction='forward', init=0):
           'maxfrm:'+str(maxFrames))
     print(vid_path)
     for x in range(init, amnt*delta+init, delta):
-        if x < maxFrames:
+        if (x < maxFrames) & (x >= 0):
             vc.set(cv2.CAP_PROP_POS_FRAMES, x)
             rval, frame = vc.read()
             if rval:

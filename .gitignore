@@ -1,5 +1,11 @@
 *.pyc
-__pycache__/
+__pycache__
 gb_flask/
 app/static/temp/*
 *.DS_Store
+node_modules
+*.csv
+*checkpoints
+*.vscode
+*ipynb
+venv

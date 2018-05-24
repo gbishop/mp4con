@@ -1,0 +1,28 @@
+{
+  "name": "web_app_test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "awesome-typescript-loader": "^3.5.0",
+    "source-map-loader": "^0.2.3",
+    "typescript": "^2.8.1"
+  },
+  "dependencies": {
+    "@types/react": "^16.1.0",
+    "@types/react-dom": "^16.0.4",
+    "@types/react-image-crop": "^3.0.0",
+    "@types/react-router": "^4.0.23",
+    "npm": "^5.8.0",
+    "react": "^16.3.0",
+    "react-dom": "^16.3.0",
+    "react-image-crop": "^3.0.11",
+    "react-router": "^4.2.0"
+  }
+}
