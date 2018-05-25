@@ -1,0 +1,49 @@
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0
+}
+#box {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
+#header {
+    flex: 0 0 auto;
+    padding-left: 10px;
+    border-bottom: 1px solid black;
+}
+#main {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    bottom: 0px;
+    flex-wrap: wrap;
+    /* overflow: scroll; */
+    overflow-y: auto;
+    position: relative;
+    justify-content: center;
+}
+.container {
+    border: thin solid black;
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+    width: 310px;
+    margin: 0px;
+}
+.container.selected {
+    background: greenyellow;
+}
+.frame {
+    width: 300px;
+    height: auto;
+}
+#crop,
+.ReactCrop {
+    /* Idk why, but need some arbitrary percent to have the ReactCrop thing be fit 
+    to the image. Something to do with FlexBox */
+    height: 2%;
+}
